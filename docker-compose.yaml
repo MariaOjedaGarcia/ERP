@@ -1,0 +1,39 @@
+version: "3.8"
+
+services:
+  web:
+    image: odoo:latest
+    platform: linux/x86_64
+    depends_on:
+      - db
+    ports:
+      - "8045:8069"
+    volumes:
+      - odoo-web-data:/var/lib/odoo
+      - ./config:/etc/odoo
+      - ./extra-addons:/mnt/extra-addons
+      - ./log:/var/log/odoo
+  db:
+    image: postgres:latest
+    ports:
+      - "5432:5432"
+    environment:
+      - DATABASE_HOST=127.0.0.1
+      - POSTGRES_DB=postgres
+      - POSTGRES_PASSWORD=odoo
+      - POSTGRES_USER=odoo
+    volumes:
+      - odoo-db-data:/var/lib/postgresql/data
+  pgadmin:
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: "admin@admin.com"
+      PGADMIN_DEFAULT_PASSWORD: "admin"
+    ports:
+      - "80:80"
+    depends_on:
+      - db
+volumes:
+  odoo-web-data:
+  odoo-db-data:
+      
